@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"module": "Node16",
+		"target": "ES2022",
+		"lib": [
+			"ES2022"
+		],
+		"sourceMap": true,
+		"rootDir": "src",
+		"strict": true, /* enable all strict type-checking options */
+		"moduleResolution": "Node16",
+		"types": [
+			"vscode",
+			"node",
+			"jest",
+			"mocha"
+		],
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true
+	},
+	"exclude": ["node_modules", ".vscode-test", "out"]
+}

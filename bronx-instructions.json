@@ -1,0 +1,56 @@
+{
+    "name": "Bronx",
+    "to_build": "A VS Code extension that provides a chat interface for interacting with local open-source language models",
+    "tech_instruction": [
+        "Build using TypeScript and VS Code Extension API",
+        "Use the built-in VS Code webview for chat interface",
+        "Support local model downloading and running using laptop's processing power",
+        "Implement a chat-like UI similar to Copilot",
+        "Allow users to switch between different open-source models",
+        "Enable code editing within the chat window using model suggestions",
+        "Handle local model loading and inference without external APIs",
+        "Support running models locally using ONNX Runtime or llama.cpp if available",
+        "Make it compatible with VS Code's extension host",
+        "use reference code from https://github.com/microsoft/vscode-copilot-chat",
+        "No sign ups"
+    ],
+    "what_it_should_do": {
+        "steps": [
+            "Initialize the VS Code extension",
+            "open the chat window in secondary sidebar",
+            "Show a chat panel in VS Code when activated",
+            "Display a list of supported open-source models (e.g., GPT-OSS, Qwen3 Coder)",
+            "Allow user to select a model from the list",
+            "Download selected model locally if not already present",
+            "Load the model in-memory or use local inference engine (e.g., llama.cpp)",
+            "Accept user input as a chat message",
+            "Generate model response based on input prompt",
+            "Display the model's response in chat UI",
+            "Allow users to edit code snippets shown in responses directly in the editor",
+            "Support multi-line code editing with syntax highlighting",
+            "Persist chat history locally in VS Code workspace",
+            "Add ability to send code context (current file, selected text) to the model for better understanding",
+            "Provide option to run code suggestions directly in VS Code terminal or output window"
+        ]
+    },
+    "config": {
+        "supported_models": [],
+        "local_model_path": "./models",
+        "default_model": "{{default_model}}",
+        "enable_code_editing": true,
+        "auto_download_models": true
+    },
+    "model_settings": [{
+            "modelname": "{{name}}",
+            "path": "{{path}}",
+            "inference_engine": "onnx",
+            "max_tokens": 2048,
+            "temperature": 0.7
+        }
+    ],
+    "permissions": [
+        "read and write files in workspace",
+        "access local file system for model storage",
+        "execute code from chat suggestions"
+    ]
+}
