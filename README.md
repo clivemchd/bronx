@@ -1,71 +1,149 @@
-# bronx README
+# Bronx - Local AI Assistant for VS Code
 
-This is the README for your extension "bronx". After writing up a brief description, we recommend including the following sections.
+Bronx is a VS Code extension that provides a chat interface for interacting with local open-source language models. Run AI models locally on your machine without requiring external APIs or sign-ups.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- 🤖 **Local AI Models**: Run open-source language models locally
+- 💬 **Chat Interface**: Integrated chat panel in VS Code
+- 🔧 **Code Integration**: Insert generated code directly into your editor
+- 📦 **Model Management**: Download and manage multiple models
+- 🚀 **No Sign-ups**: Works completely offline after initial setup
+- ⚡ **Multiple Engines**: Support for llama.cpp, ONNX Runtime, and more
 
-For example if there is an image subfolder under your extension project workspace:
+## Getting Started
 
-\!\[feature X\]\(images/feature-x.png\)
+### 1. Install the Extension
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Install Bronx from the VS Code marketplace or build from source.
 
-## Requirements
+### 2. Open the Chat Panel
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- Use the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`) and search for "Bronx: Open Chat"
+- Or click on the Bronx Chat panel in the secondary sidebar
 
-## Extension Settings
+### 3. Download a Model
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+1. Click the model selector dropdown in the chat panel
+2. Use "Bronx: Download Model" command to download your first model
+3. Start with smaller models like `qwen2.5-coder-1.5b` for faster responses
 
-For example:
+### 4. Start Chatting
 
-This extension contributes the following settings:
+- Select a downloaded model from the dropdown
+- Type your questions or requests in the chat input
+- Use code suggestions by clicking "Insert" on code blocks
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## Supported Models
 
-## Known Issues
+Bronx comes pre-configured with several popular open-source models:
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- **Qwen2.5-Coder (1.5B)** - Fast and efficient coding model
+- **Qwen2.5-Coder (7B)** - Balanced performance coding model  
+- **Code Llama (7B)** - Meta's specialized coding model
+- **Phi-3 Mini** - Microsoft's lightweight model
 
-## Release Notes
+## Commands
 
-Users appreciate release notes as you update your extension.
+- `Bronx: Open Chat` - Open the chat panel
+- `Bronx: Download Model` - Download a new model
+- `Bronx: Manage Models` - View and manage downloaded models
+- `Bronx: Clear Chat` - Clear chat history
+- `Bronx: Open Settings` - Open extension settings
 
-### 1.0.0
+## Settings
 
-Initial release of ...
+Configure Bronx through VS Code settings:
 
-### 1.0.1
+```json
+{
+  "bronx.localModelPath": "./models",
+  "bronx.defaultModel": "qwen2.5-coder-1.5b",
+  "bronx.enableCodeEditing": true,
+  "bronx.autoDownloadModels": true,
+  "bronx.maxTokens": 2048,
+  "bronx.temperature": 0.7
+}
+```
 
-Fixed issue #.
+## Features in Detail
 
-### 1.1.0
+### Chat Interface
 
-Added features X, Y, and Z.
+- Clean, VS Code-themed chat interface
+- Syntax highlighting for code blocks
+- Copy and insert code directly into your editor
+- Persistent chat history per session
 
----
+### Model Management
 
-## Following extension guidelines
+- Download models from Hugging Face (simulated in development)
+- View download progress
+- Manage local model storage
+- Switch between models seamlessly
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+### Code Integration
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+- Send current file context to the model
+- Include selected code in your prompts
+- Insert generated code at cursor position
+- Automatic code formatting after insertion
 
-## Working with Markdown
+### Context Awareness
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+Bronx automatically includes relevant context in your conversations:
+- Current file and language
+- Selected code snippets
+- Cursor position context
+- Recent chat history
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+## Development
 
-## For more information
+### Building from Source
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+1. Clone the repository
+2. Install dependencies: `pnpm install`
+3. Build the extension: `pnpm run compile`
+4. Run in development: Press F5 to launch Extension Development Host
 
-**Enjoy!**
+### Project Structure
+
+```
+src/
+├── extension.ts          # Main extension entry point
+├── chat/
+│   └── chatPanelProvider.ts  # Webview chat interface
+├── models/
+│   ├── modelManager.ts       # Model storage and management
+│   ├── modelDownloader.ts    # Download utilities
+│   └── inferenceEngine.ts    # Model inference
+├── config/
+│   └── settings.ts          # Configuration management
+├── types/
+│   └── index.ts            # TypeScript type definitions
+└── webview/
+    └── chat.html           # Chat UI HTML/CSS/JS
+```
+
+## Roadmap
+
+- [ ] Real HuggingFace model downloading
+- [ ] llama.cpp integration for actual inference
+- [ ] ONNX Runtime support
+- [ ] Transformers.js support
+- [ ] Custom model configurations
+- [ ] Multi-turn conversations with context
+- [ ] Code completion integration
+- [ ] Plugin system for custom models
+
+## Contributing
+
+Contributions are welcome! Please read our contributing guidelines and submit pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Disclaimer
+
+This is a development version with simulated model functionality. Real model inference capabilities are planned for future releases.

@@ -1,26 +1,74 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import * as vscode from 'vscode';
+import { ServiceCollection, InstantiationService } from './platform/instantiation/node/instantiationService';
+import { ILanguageModelService } from './platform/languageModel/common/languageModelService';
+import { LanguageModelService } from './platform/languageModel/node/languageModelService';
+import { IChatParticipantsService } from './platform/chat/common/chatParticipants';
+import { ChatParticipantsService } from './platform/chat/node/chatParticipantsService';
+import { ContributionCollection, IExtensionContributionFactory } from './extension/common/contributions';
+import { getBronxContributions } from './extension/contributions/bronxContributions';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "bronx" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('bronx.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Bronx in vs code!');
-	});
-
-	context.subscriptions.push(disposable);
+/**
+ * Extension activation configuration
+ */
+interface IExtensionActivationConfiguration {
+	context: vscode.ExtensionContext;
+	contributions: IExtensionContributionFactory[];
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+/**
+ * Main extension activation function following VS Code Copilot Chat architecture
+ */
+export async function activate(context: vscode.ExtensionContext) {
+	console.log('Bronx extension is now active!');
+
+	// Create service collection and register core services
+	const services = new ServiceCollection();
+	registerServices(services, context);
+
+	// Create instantiation service
+	const instantiationService = services.build();
+	context.subscriptions.push(instantiationService);
+
+	// Create and initialize contributions
+	const contributions = new ContributionCollection(getBronxContributions(context));
+	context.subscriptions.push(contributions);
+
+	// Wait for all activation blockers to complete
+	await contributions.waitForActivationBlockers();
+
+	console.log('Bronx extension activation complete!');
+
+	// Return extension API (similar to Copilot Chat)
+	return {
+		getAPI(version: number) {
+			if (version > 1) {
+				throw new Error('Invalid Bronx extension API version. Please upgrade Bronx.');
+			}
+			
+			return {
+				// Extension API can be exposed here
+				version: 1
+			};
+		}
+	};
+}
+
+/**
+ * Register core services with the service collection
+ */
+function registerServices(services: ServiceCollection, context: vscode.ExtensionContext): void {
+	// Register language model service
+	services.setSingleton(ILanguageModelService, new LanguageModelService());
+
+	// Register chat participants service
+	services.setSingleton(IChatParticipantsService, new ChatParticipantsService());
+}
+
+export function deactivate() {
+	console.log('Bronx extension deactivated');
+}

@@ -1,23 +1,163 @@
 {
   "name": "bronx",
   "displayName": "Bronx",
-  "description": "Cursor for open source locally run models",
+  "description": "Local AI chat assistant for VS Code",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.102.0"
   },
   "categories": [
+    "AI",
+    "Chat",
     "Other"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "bronx-panel",
+          "title": "Bronx",
+          "icon": "./bronx-logo-24.svg"
+        }
+      ]
+    },
+    "views": {
+      "bronx-panel": [
+        {
+          "id": "bronx.chatView",
+          "name": "Chat",
+          "type": "webview",
+          "when": "true",
+          "icon": "./bronx-logo.svg"
+        }
+      ]
+    },
     "commands": [
       {
+        "command": "bronx.openChat",
+        "title": "Open Chat",
+        "category": "Bronx",
+        "icon": "./bronx-logo.svg"
+      },
+      {
+        "command": "bronx.clearChat",
+        "title": "Clear Chat History",
+        "category": "Bronx",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "bronx.downloadModel",
+        "title": "Download Model",
+        "category": "Bronx",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "bronx.manageModels",
+        "title": "Manage Models",
+        "category": "Bronx",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "bronx.openSettings",
+        "title": "Open Settings",
+        "category": "Bronx",
+        "icon": "$(settings)"
+      },
+      {
         "command": "bronx.helloWorld",
-        "title": "Hello World"
+        "title": "Hello World",
+        "category": "Bronx"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "bronx.clearChat",
+          "when": "view == bronx.chatView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "bronx.manageModels",
+          "when": "view == bronx.chatView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "bronx.openSettings",
+          "when": "view == bronx.chatView",
+          "group": "navigation@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "bronx.openChat"
+        },
+        {
+          "command": "bronx.clearChat"
+        },
+        {
+          "command": "bronx.downloadModel"
+        },
+        {
+          "command": "bronx.manageModels"
+        },
+        {
+          "command": "bronx.openSettings"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "bronx.openChat",
+        "key": "ctrl+shift+l",
+        "mac": "cmd+shift+l",
+        "when": "!terminalFocus"
+      },
+      {
+        "command": "bronx.clearChat",
+        "key": "ctrl+shift+alt+c",
+        "mac": "cmd+shift+alt+c",
+        "when": "bronx.chatView.focus"
+      }
+    ],
+    "configuration": {
+      "title": "Bronx",
+      "properties": {
+        "bronx.localModelPath": {
+          "type": "string",
+          "default": "./models",
+          "description": "Local path where models are stored"
+        },
+        "bronx.defaultModel": {
+          "type": "string",
+          "default": "qwen2.5-coder-1.5b",
+          "description": "Default model to load on startup"
+        },
+        "bronx.enableCodeEditing": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable code editing from chat responses"
+        },
+        "bronx.autoDownloadModels": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically download models when selected"
+        },
+        "bronx.maxTokens": {
+          "type": "number",
+          "default": 2048,
+          "description": "Maximum tokens for model responses"
+        },
+        "bronx.temperature": {
+          "type": "number",
+          "default": 0.7,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Temperature for model inference (0-1)"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
@@ -31,7 +171,11 @@
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "setup": "node setup.js",
+    "dev": "pnpm run setup && pnpm run watch",
+    "clean": "rm -rf dist out models",
+    "reset": "pnpm run clean && pnpm install && pnpm run setup"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
